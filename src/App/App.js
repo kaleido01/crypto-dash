@@ -1,8 +1,15 @@
 import React, { Component } from "react";
+import "./App.css";
+import styled, { css } from "styled-components";
+import WelcomeMessage from "./WelcomeMessage";
 
 class App extends Component {
 	render() {
-		return <div>app</div>;
+		return (
+			<div>
+				<WelcomeMessage />
+			</div>
+		);
 	}
 }
 export default App;
