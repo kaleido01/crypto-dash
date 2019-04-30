@@ -12,12 +12,12 @@ const CoinImage = styled.img`
 		`}
 `;
 
-export default function({ coin, style, spotlight }) {
+export default function({ coin, spotlight }) {
 	return (
 		<CoinImage
 			alt={coin.symbol}
 			src={`http://cryptocompare.com/${coin.ImageUrl}`}
-			spotlight
+			spotlight={spotlight}
 		/>
 	);
 }

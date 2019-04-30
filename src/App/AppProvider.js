@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import cc from "cryptocompare";
 import _ from "lodash";
+import moment from "moment";
 
 export const AppContext = React.createContext();
 const MAX_FAVORITE = 10;
+const TIME_UNITS = 10;
 
 export class AppProvider extends Component {
 	constructor(props) {
@@ -25,6 +27,7 @@ export class AppProvider extends Component {
 	componentDidMount = () => {
 		this.fetchCoins();
 		this.fetchPrices();
+		this.fetchHistorical();
 	};
 
 	addCoin = key => {
@@ -53,6 +56,24 @@ export class AppProvider extends Component {
 		this.setState({ prices });
 	};
 
+	fetchHistorical = async () => {
+		if (this.state.firstVisit) return;
+		let results = await this.historical();
+		let historical = [
+			{
+				name: this.state.currentFavorite,
+				data: results.map((ticker, index) => [
+					moment()
+						.subtract({ months: TIME_UNITS - index })
+						.valueOf(),
+					ticker.USD
+				])
+			}
+		];
+		console.log(historical);
+		this.setState({ historical });
+	};
+
 	prices = async () => {
 		let returnData = [];
 		for (let i = 0; i < this.state.favorites.length; i++) {
@@ -66,16 +87,35 @@ export class AppProvider extends Component {
 		return returnData;
 	};
 
+	historical = () => {
+		let promises = [];
+		for (let units = TIME_UNITS; units > 0; units--) {
+			promises.push(
+				cc.priceHistorical(
+					this.state.currentFavorite,
+					["USD"],
+					moment()
+						.subtract({ months: units })
+						.toDate()
+				)
+			);
+		}
+		return Promise.all(promises);
+	};
+
 	confirmFavorites = () => {
 		let currentFavorite = this.state.favorites[0];
 		this.setState(
 			{
 				firstVisit: false,
 				page: "dashboard",
-				currentFavorite
+				currentFavorite,
+				prices: null,
+				historical: null
 			},
 			() => {
 				this.fetchPrices();
+				this.fetchHistorical();
 			}
 		);
 		localStorage.setItem(
@@ -88,9 +128,13 @@ export class AppProvider extends Component {
 	};
 
 	setCurrentFavorite = sym => {
-		this.setState({
-			currentFavorite: sym
-		});
+		this.setState(
+			{
+				currentFavorite: sym,
+				historical: null
+			},
+			this.fetchHistorical
+		);
 		localStorage.setItem(
 			"cryptoDash",
 			JSON.stringify({
