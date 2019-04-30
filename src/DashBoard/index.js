@@ -9,7 +9,21 @@ const ChartGrid = styled.div`
 	display: grid;
 	margin-top: 20px;
 	grid-gap: 15px;
-	grid-template-columns: 1fr 3fr;
+	grid-template-columns: 1fr 0 3fr;
+
+	@media (max-width: 767px) {
+		display: block;
+		width: 100%;
+		height: auto;
+		text-align: center;
+	}
+`;
+
+const MobileMargin = styled.div`
+	@media (max-width: 767px) {
+		display: block;
+		margin: 20px;
+	}
 `;
 
 export default function index() {
@@ -18,6 +32,9 @@ export default function index() {
 			<PriceGrid />
 			<ChartGrid>
 				<CoinSpotlight />
+				<MobileMargin>
+					<div />
+				</MobileMargin>
 				<PriceChart />
 			</ChartGrid>
 		</Page>
