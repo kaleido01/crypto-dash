@@ -6,5 +6,6 @@ export default styled.select`
 	${fontSize2}
   color:#1163c9;
 	float: right;
+	margin: 3px;
 	border: 1px solid;
 `;

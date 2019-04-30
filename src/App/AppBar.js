@@ -48,7 +48,7 @@ const ControllButton = ({ name }) => {
 export default function() {
 	return (
 		<Bar>
-			<Logo>CryptoDasy</Logo>
+			<Logo>CryptoDash</Logo>
 			<div />
 			<ControllButton name="dashboard" />
 			<ControllButton name="settings" />
